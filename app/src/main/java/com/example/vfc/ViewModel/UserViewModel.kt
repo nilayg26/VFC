@@ -27,7 +27,7 @@ class UserViewModel :ViewModel(){
                             _authState.value = Authenticated
                         }
                         else{
-                            context.createToastMessage("Check you email to verify")
+                            context.createToastMessage("Check your email to verify")
                             _authState.value=EmailNotVerified
                         }
                     }

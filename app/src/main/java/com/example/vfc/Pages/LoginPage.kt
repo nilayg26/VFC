@@ -55,11 +55,12 @@ fun LogIn(
     LaunchedEffect(authState.value){
         when(authState.value){
             Loading -> {isLoading=true}
-            Authenticated,EmailNotVerified ->{navController.navigate(HomePage.route){
+            Authenticated->{navController.navigate(HomePage.route){
                 popUpTo(LogInPage.route) {
                     inclusive=true
                 }
             };isLoading=false}
+            EmailNotVerified->{isLoading=false}
             Unauthenticated ->{isLoading=false}
             else->{isLoading=false}
         }

@@ -25,7 +25,9 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavHostController
 import com.example.vfc.LoadingScreenLL
+import com.example.vfc.LogInPage
 import com.example.vfc.LogoButtonVFC
+import com.example.vfc.SignInPage
 import com.example.vfc.TextCardVFC
 import com.example.vfc.TextFieldVFC
 import com.example.vfc.ViewModel.Authenticated
@@ -55,8 +57,8 @@ fun SignUp(
     LaunchedEffect(authState.value){
        when(authState.value){
            Loading-> {isLoading=true}
-          EmailNotVerified ->{navController.popBackStack(); isLoading=false}
-          Authenticated->{navController.popBackStack(); isLoading=false}
+           EmailNotVerified ->{navController.navigate(LogInPage.route); isLoading=false}
+           Authenticated->{navController.popBackStack(); isLoading=false}
            else->{isLoading=false}
        }
     }
