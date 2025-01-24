@@ -1,9 +1,9 @@
 package com.example.vfc
 
 import android.content.Context
-import android.content.SharedPreferences
-import android.graphics.drawable.Icon
+
 import androidx.compose.foundation.Image
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Row
@@ -17,6 +17,8 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.AccountBox
+import androidx.compose.material.icons.filled.Add
+import androidx.compose.material.icons.filled.Clear
 import androidx.compose.material.icons.filled.Favorite
 import androidx.compose.material.icons.filled.FavoriteBorder
 import androidx.compose.material.icons.filled.ShoppingCart
@@ -44,6 +46,7 @@ import androidx.compose.ui.graphics.RectangleShape
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontFamily
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.KeyboardType
@@ -63,9 +66,9 @@ fun TextFieldVFC(text: String, password:Boolean=true, label: String="", lamda: (
         mutableStateOf(true)
     }
     OutlinedTextField(value = text, onValueChange ={newVal->lamda(newVal)}, label = { Text(
-        text = label
+        text = label, fontSize = 15.sp,
     )
-    },
+    }, textStyle = TextStyle(fontSize = 13.sp),
         shape = RoundedCornerShape(20.dp), modifier = Modifier.padding(top = 10.dp),
         colors = OutlinedTextFieldDefaults.colors(Color.Black, Color.Black),
         visualTransformation =
@@ -145,7 +148,7 @@ fun check(list: List<String>,context: Context):Boolean{
         }
     }
     if(list.size==2){
-        if(!list[1].contains("@vitstudent.ac.in")){
+        if(!list[0].contains("@vitstudent.ac.in")){
             context.createToastMessage("Enter valid email address")
             return  false
         }
@@ -171,8 +174,48 @@ fun RestaurantCard(
     name: String = "KC foods",
     des: String = "All India Cuisine, \nNon-veg & veg, \nBetween PRP and SJT",
     picUrl: String = "",
+    price: String,
+    onClick: () -> Unit={}
+){
+    Spacer(modifier = Modifier.height(10.dp))
+    Card(modifier = Modifier
+        .padding(start = 10.dp, end = 10.dp)
+        .fillMaxWidth().clickable { onClick() }, colors = CardDefaults.cardColors(Color.White), elevation = CardDefaults.cardElevation(10.dp)
+    ) {
+        Spacer(modifier = Modifier.height(5.dp))
+        Text(text=name, fontFamily = Fonts.paragraph, fontWeight = FontWeight.Bold,
+            color = Colors.O3, fontSize = 25.sp, modifier = Modifier.padding(start = 10.dp)
+        )
+        Row(modifier = Modifier.fillMaxWidth(), Arrangement.SpaceBetween,Alignment.CenterVertically) {
+            Box(modifier = Modifier.width(200.dp)){
+                TextVFC(text = des, color = Colors.Primary, size = 12)
+            }
+            Box(modifier = Modifier
+                .padding(10.dp)
+                .size(80.dp)
+                .clip(RoundedCornerShape(10.dp))){
+                GlideImage(
+                    model = picUrl,
+                    contentDescription = "Food pic",
+                    modifier = Modifier.matchParentSize(),
+                    contentScale = ContentScale.Crop,
+                    loading = placeholder(R.drawable.kcfoods)
+                )
+            }
+        }
+        TextVFC(text = "Rs.$price", size = 12, color = Colors.O3)
+        Spacer(modifier = Modifier.height(10.dp))
+    }
+}
+@OptIn(ExperimentalGlideComposeApi::class)
+@Composable
+fun ItemCard(
+    name: String = "Paneer Paratha",
+    des: String = "Home made Tast, Fresh Paneer, \n Veg",
+    picUrl: String = "",
     price: String
 ){
+    var counter by remember { mutableStateOf(0) }
     Spacer(modifier = Modifier.height(10.dp))
     Card(modifier = Modifier
         .padding(start = 10.dp, end = 10.dp)
@@ -195,11 +238,39 @@ fun RestaurantCard(
                     contentDescription = "Food pic",
                     modifier = Modifier.matchParentSize(),
                     contentScale = ContentScale.Crop,
-                    loading = placeholder(R.drawable.lemon_dessert)
+                    loading = placeholder(R.drawable.paneer_paratha)
                 )
             }
         }
         TextVFC(text = "Rs.$price", size = 12, color = Colors.O3)
+        CounterControl(onAdd = {counter++},onSub={counter--},counter)
         Spacer(modifier = Modifier.height(10.dp))
     }
 }
+@Composable
+fun CounterControl(onAdd: () -> Unit, onSub: () -> Unit, counter: Int) {
+    Row(
+        verticalAlignment = Alignment.CenterVertically,
+        horizontalArrangement = Arrangement.Center,
+        modifier = Modifier.fillMaxWidth()
+    ) {
+        IconButton(
+            onClick = { if (counter >0){onSub()}},Modifier.size(20.dp)
+        ) {
+            Icon(Icons.Filled.Clear, contentDescription = "Decrease")
+        }
+        Spacer(modifier = Modifier.width(10.dp))
+        TextVFC(
+            text = counter.toString(),
+            size = 30,
+            color = Colors.Primary
+        )
+        Spacer(modifier = Modifier.width(15.dp))
+        IconButton(
+            onClick = { if (counter < 3){onAdd()}},Modifier.size(20.dp)
+        ) {
+            Icon(Icons.Default.Add, contentDescription = "Increase")
+        }
+    }
+}
+

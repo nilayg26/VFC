@@ -1,4 +1,3 @@
 package com.example.vfc.ViewModel
 
-class DatabaseViewModel {
-}
+import androidx.lifecycle.ViewModel

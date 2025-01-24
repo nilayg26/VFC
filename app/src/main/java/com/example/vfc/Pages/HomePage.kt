@@ -1,7 +1,7 @@
 package com.example.vfc.Pages
 
+import android.content.SharedPreferences
 import androidx.compose.foundation.Image
-import androidx.compose.foundation.horizontalScroll
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -18,7 +18,6 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.AccountBox
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
-import androidx.compose.material3.Text
 import androidx.compose.material3.TextField
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
@@ -29,32 +28,39 @@ import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import androidx.navigation.NavHostController
+import com.example.vfc.CartPage
 import com.example.vfc.IconButtonVFC
 import com.example.vfc.LogoButtonVFC
+import com.example.vfc.ProfilePage
 import com.example.vfc.R
 import com.example.vfc.RestaurantCard
+import com.example.vfc.RestaurantPage
 import com.example.vfc.TextVFC
+import com.example.vfc.ViewModel.UserViewModel
 import com.example.vfc.ui.theme.Colors
 import com.example.vfc.ui.theme.Fonts
 import com.example.vfc.ui.theme.VFCTheme
 
 @Composable
-fun HomePage(){
+fun HomePage(
+    navController: NavHostController,
+    sharedPreferences: SharedPreferences,
+    firebaseModel: UserViewModel
+) {
     VFCTheme {
         Column(horizontalAlignment = Alignment.CenterHorizontally, modifier = Modifier.fillMaxSize()) {
-            Spacer(modifier = Modifier.height(10.dp))
             Row(
                 modifier = Modifier.fillMaxWidth(),
                 verticalAlignment = Alignment.CenterVertically,
                 horizontalArrangement = Arrangement.SpaceEvenly
             ) {
-                IconButtonVFC(imageVector = Icons.Filled.AccountBox)
+                IconButtonVFC(imageVector = Icons.Filled.AccountBox, onClick = {navController.navigate(ProfilePage.route)})
                 Spacer(modifier = Modifier.width(20.dp))
                 LogoButtonVFC(size = 120)
                 Spacer(modifier = Modifier.width(20.dp))
-                IconButtonVFC()
+                IconButtonVFC(onClick = {navController.navigate(CartPage.route)})
             }
-            Spacer(modifier = Modifier.height(10.dp))
             Card(
                 colors = CardDefaults.cardColors(
                     containerColor = Colors.Primary,
@@ -63,12 +69,17 @@ fun HomePage(){
             ) {
                 Spacer(modifier = Modifier.height(10.dp))
                 TextVFC(
-                    text = "Welcome to VFC!",
+                    text = "Welcome to",
                     size = 40,
                     fontFamily = Fonts.headlines,
                     color = Colors.Secondary
                 )
-                Spacer(modifier = Modifier.height(10.dp))
+                TextVFC(
+                    text = "VFC!",
+                    size = 40,
+                    fontFamily = Fonts.headlines,
+                    color = Colors.Secondary
+                )
                 Row(
                     Modifier.fillMaxWidth(),
                     verticalAlignment = Alignment.CenterVertically,
@@ -108,14 +119,14 @@ fun HomePage(){
             }
             Column(modifier = Modifier
                 .fillMaxSize(), horizontalAlignment = Alignment.CenterHorizontally) {
-                RestaurantCard(price = "100/person appx.")
+                RestaurantCard(price = "100/person appx."){navController.navigate(RestaurantPage.route)}
             }
         }
     }
 
 }
-@Preview(showBackground = true)
-@Composable
-fun PreviewHome(){
-    HomePage()
-}
+//@Preview(showBackground = true)
+//@Composable
+//fun PreviewHome(){
+//    HomePage(navController, sharedPreferences, firebaseModel)
+//}

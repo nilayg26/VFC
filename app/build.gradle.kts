@@ -51,6 +51,10 @@ android {
 }
 
 dependencies {
+    implementation("androidx.compose.runtime:runtime-livedata:1.7.6")
+
+    implementation("androidx.navigation:navigation-compose:2.8.5")
+    implementation("com.google.firebase:firebase-auth:23.1.0")
     implementation ("com.github.bumptech.glide:compose:1.0.0-beta01")
     implementation("androidx.core:core-ktx:1.15.0")
     implementation("androidx.lifecycle:lifecycle-runtime-ktx:2.8.7")

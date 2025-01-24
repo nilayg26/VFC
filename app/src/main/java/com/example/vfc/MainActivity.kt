@@ -1,22 +1,33 @@
 package com.example.vfc
 
 import android.content.Context
+import android.content.SharedPreferences
 import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
+import androidx.activity.viewModels
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
-import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.tooling.preview.Preview
+import androidx.navigation.compose.NavHost
+import androidx.navigation.compose.composable
+import androidx.navigation.compose.rememberNavController
+import com.example.vfc.Pages.CartPage
+import com.example.vfc.Pages.HomePage
+import com.example.vfc.Pages.LogIn
+import com.example.vfc.Pages.ProfilePage
+import com.example.vfc.Pages.RestaurantPage
+import com.example.vfc.Pages.SignUp
+import com.example.vfc.ViewModel.UserViewModel
 import com.example.vfc.ui.theme.VFCTheme
 
 class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         val sharedPreferences=this.getSharedPreferences("LittleLemon", Context.MODE_PRIVATE)
+        val firebaseModel:UserViewModel by viewModels()
         setContent {
             VFCTheme {
                 // A surface container using the 'background' color from the theme
@@ -24,7 +35,7 @@ class MainActivity : ComponentActivity() {
                     modifier = Modifier.fillMaxSize(),
                     color = MaterialTheme.colorScheme.background
                 ) {
-                    Greeting("Android")
+                   Navigation(firebaseModel = firebaseModel, sharedPreferences =sharedPreferences )
                 }
             }
         }
@@ -32,17 +43,33 @@ class MainActivity : ComponentActivity() {
 }
 
 @Composable
-fun Greeting(name: String, modifier: Modifier = Modifier) {
-    Text(
-        text = "Hello $name!",
-        modifier = modifier
-    )
-}
-
-@Preview(showBackground = true)
-@Composable
-fun GreetingPreview() {
-    VFCTheme {
-        Greeting("Android")
+fun Navigation(
+    firebaseModel: UserViewModel,
+    sharedPreferences: SharedPreferences,
+){
+    val navController= rememberNavController()
+    val status= sharedPreferences.getBoolean("LoginStatus",false)
+    NavHost(navController = navController, startDestination = when(status){
+        true->HomePage.route
+        else->LogInPage.route
+    }){
+        composable(LogInPage.route) {
+            LogIn(navController,sharedPreferences,firebaseModel)
+        }
+        composable(SignInPage.route){
+            SignUp(navController,firebaseModel,sharedPreferences)
+        }
+        composable(HomePage.route) {
+            HomePage(navController,sharedPreferences,firebaseModel)
+        }
+        composable(ProfilePage.route) {
+            ProfilePage(navController,sharedPreferences,firebaseModel)
+        }
+        composable(CartPage.route) {
+            CartPage(navController,sharedPreferences,firebaseModel)
+        }
+        composable(RestaurantPage.route) {
+            RestaurantPage(navController,sharedPreferences,firebaseModel)
+        }
     }
 }
