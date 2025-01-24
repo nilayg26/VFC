@@ -1,5 +1,6 @@
 package com.example.vfc
 
+import android.content.Context
 import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
@@ -15,6 +16,7 @@ import com.example.vfc.ui.theme.VFCTheme
 class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+        val sharedPreferences=this.getSharedPreferences("LittleLemon", Context.MODE_PRIVATE)
         setContent {
             VFCTheme {
                 // A surface container using the 'background' color from the theme
