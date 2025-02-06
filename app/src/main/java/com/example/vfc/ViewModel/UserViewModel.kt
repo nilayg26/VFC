@@ -1,4 +1,5 @@
 package com.example.vfc.ViewModel
+import android.annotation.SuppressLint
 import android.content.Context
 import android.content.SharedPreferences
 import android.util.Log
@@ -13,7 +14,8 @@ class UserViewModel :ViewModel(){
     private  val _authState = MutableLiveData<State>()
     val authState:LiveData<State> = _authState
     private var db=FirebaseFirestore.getInstance()
-    fun logIn(context: Context,sharedPreferences: SharedPreferences,pass:String){
+    @SuppressLint("SuspiciousIndentation")
+    fun logIn(context: Context, sharedPreferences: SharedPreferences, pass:String){
         _authState.value=Loading
         val email=sharedPreferences.getString("email","")
             if (email != null) {
@@ -32,6 +34,7 @@ class UserViewModel :ViewModel(){
                         }
                     }
                     else {
+                        context.createToastMessage(task.exception?.message.toString())
                             _authState.value = Error(task.exception?.message ?: "Something went wrong")
                         }
                 }
@@ -50,15 +53,18 @@ class UserViewModel :ViewModel(){
                         context.createToastMessage("Check your inbox to verify and login")
                         sharedPreferences.edit().putString("uid",auth.uid).apply()
                         //send data to firebase
-                        addUser(email, name, reg,context)
+                       val boolean= addUser(email, name, reg,context)
+                        if (boolean){
                         _authState.value = EmailNotVerified
-                    }?.addOnFailureListener {
-                        context.createToastMessage(it.message.toString())
-                        sharedPreferences.edit().clear().apply()
-                        _authState.value = Error(it.message.toString())
+                        }
+                        else{
+                            context.createToastMessage("Something went wrong")
+                            _authState.value=Error("Something went wrong")
+                        }
                     }
                 }
                 else{
+                    context.createToastMessage(task.exception?.message.toString())
                     _authState.value = Error(task.exception?.message ?: "Something went wrong")
                 }
             }
@@ -79,7 +85,8 @@ class UserViewModel :ViewModel(){
                         if (task.isSuccessful) {
                             println("User Added");
                         } else {
-                            println("Hey error from add user: " + task.exception?.message)
+                            context.createToastMessage(task.exception?.message.toString())
+                            println("error from add user: " + task.exception?.message)
                         }
                     }
             }
@@ -108,8 +115,32 @@ class UserViewModel :ViewModel(){
                     println("From getUser(): User does not exists")
                 }
             } else {
+                context.createToastMessage(task.exception?.message.toString())
                 println("From getUser(): ${task.exception?.message.toString()}")
                 _authState.value = Error(task.exception?.message.toString())
+            }
+        }
+    }
+    fun forgotPassword(email: String,context: Context){
+        _authState.value=Loading
+        auth.sendPasswordResetEmail(email).addOnCompleteListener{
+            task->
+            if (task.isSuccessful){
+                try {
+                    context.createToastMessage("Check inbox")
+                    _authState.value = EmailNotVerified
+                }
+                catch (e:Exception){
+                    val err="Account not found"
+                    context.createToastMessage(err)
+                    println("From forgotPassword(): ${e.message}")
+                    _authState.value=Error(err)
+                }
+            }
+            else{
+                context.createToastMessage(task.exception?.message.toString())
+                println("From forgotPassword(): ${task.exception?.message.toString()}")
+                _authState.value=Error(task.exception?.message.toString())
             }
         }
     }
@@ -121,7 +152,7 @@ object Loading:State{
     override var value="loading"
 }
 object EmailNotVerified:State{
-    override var value="loading"
+    override var value="EmailNotVerified"
 }
 object Authenticated:State{
     override var value="authen"

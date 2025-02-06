@@ -6,6 +6,8 @@ import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.activity.viewModels
+import androidx.compose.animation.scaleIn
+import androidx.compose.animation.scaleOut
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
@@ -15,6 +17,7 @@ import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import com.example.vfc.Pages.CartPage
+import com.example.vfc.Pages.ForgotPassword
 import com.example.vfc.Pages.HomePage
 import com.example.vfc.Pages.LogIn
 import com.example.vfc.Pages.ProfilePage
@@ -30,7 +33,6 @@ class MainActivity : ComponentActivity() {
         val firebaseModel:UserViewModel by viewModels()
         setContent {
             VFCTheme {
-                // A surface container using the 'background' color from the theme
                 Surface(
                     modifier = Modifier.fillMaxSize(),
                     color = MaterialTheme.colorScheme.background
@@ -53,16 +55,16 @@ fun Navigation(
         true->HomePage.route
         else->LogInPage.route
     }){
-        composable(LogInPage.route) {
+        composable(LogInPage.route, enterTransition = { scaleIn() }, exitTransition = { scaleOut() }) {
             LogIn(navController,sharedPreferences,firebaseModel)
         }
-        composable(SignInPage.route){
+        composable(SignInPage.route, enterTransition = { scaleIn() }, exitTransition = { scaleOut() }){
             SignUp(navController,firebaseModel,sharedPreferences)
         }
-        composable(HomePage.route) {
+        composable(HomePage.route, enterTransition = { scaleIn() }, exitTransition = { scaleOut() }) {
             HomePage(navController,sharedPreferences,firebaseModel)
         }
-        composable(ProfilePage.route) {
+        composable(ProfilePage.route, enterTransition = { scaleIn() }, exitTransition = { scaleOut() }) {
             ProfilePage(navController,sharedPreferences,firebaseModel)
         }
         composable(CartPage.route) {
@@ -70,6 +72,9 @@ fun Navigation(
         }
         composable(RestaurantPage.route) {
             RestaurantPage(navController,sharedPreferences,firebaseModel)
+        }
+        composable(ForgotPassword.route, enterTransition = { scaleIn() }, exitTransition = { scaleOut() }) {
+           ForgotPassword(firebaseModel,navController)
         }
     }
 }

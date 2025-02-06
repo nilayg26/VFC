@@ -1,6 +1,7 @@
 package com.example.vfc
 
 import android.content.Context
+import androidx.compose.animation.animateContentSize
 
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.clickable
@@ -87,12 +88,12 @@ fun TextFieldVFC(text: String, password:Boolean=true, label: String="", lamda: (
     )
 }
 @Composable
-fun TextCardVFC(text:String){
+fun TextCardVFC(text:String,size: Int=28){
     Card(colors = CardDefaults.cardColors(containerColor = Colors.Primary, contentColor = Colors.O4), modifier = Modifier.fillMaxWidth(), shape = RectangleShape) {
         Text(
             text = text,
             fontFamily = Fonts.paragraph,
-            fontSize = 28.sp,
+            fontSize = size.sp,
             modifier = Modifier
                 .align(alignment = Alignment.CenterHorizontally)
                 .padding(40.dp)
@@ -113,7 +114,6 @@ fun LogoButtonVFC(size: Int=100){
         Image(painter = painterResource(id = R.drawable.app_logo), contentDescription = "logo",
             Modifier
                 .size(size.dp))
-       // Text(text = "Little Lemon", fontFamily = Fonts.headlines, fontSize = 28.sp)
 }
 @Composable
 fun TextVFC(text: String="Little Lemon", size:Int=30, fontFamily: FontFamily =Fonts.paragraph, color: Color =Colors.O4){
@@ -147,7 +147,7 @@ fun check(list: List<String>,context: Context):Boolean{
             return false
         }
     }
-    if(list.size==2){
+    if(list.size==2||list.size==1){
         if(!list[0].contains("@vitstudent.ac.in")){
             context.createToastMessage("Enter valid email address")
             return  false
@@ -273,4 +273,14 @@ fun CounterControl(onAdd: () -> Unit, onSub: () -> Unit, counter: Int) {
         }
     }
 }
-
+@Composable
+fun GoButton(text:String,isLoading:Boolean,onClick:()->(Unit)){
+    Button(modifier = Modifier.animateContentSize(),onClick = onClick, colors = ButtonDefaults.buttonColors(containerColor = Colors.Secondary, contentColor = Colors.Primary)) {
+        if (isLoading){
+            LoadingScreenLL()
+        }
+        else{
+            Text(text = text, fontFamily = Fonts.paragraph, fontSize = 18.sp)
+        }
+    }
+}

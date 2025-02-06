@@ -25,3 +25,6 @@ object RestaurantPage: Destination{
 object Status:Destination{
     override var route: String="StatusPage"
 }
+object ForgotPassword:Destination{
+    override var route: String="ForgotPassword"
+}

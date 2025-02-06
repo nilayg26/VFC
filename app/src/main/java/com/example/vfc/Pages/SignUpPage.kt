@@ -1,5 +1,6 @@
 package com.example.vfc.Pages
 import android.content.SharedPreferences
+import androidx.compose.animation.animateContentSize
 import androidx.compose.ui.unit.dp
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
@@ -24,6 +25,7 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavHostController
+import com.example.vfc.GoButton
 import com.example.vfc.LoadingScreenLL
 import com.example.vfc.LogInPage
 import com.example.vfc.LogoButtonVFC
@@ -53,7 +55,6 @@ fun SignUp(
     var isLoading by remember {
         mutableStateOf(false)
     }
-    val context= LocalContext.current
     LaunchedEffect(authState.value){
        when(authState.value){
            Loading-> {isLoading=true}
@@ -95,27 +96,14 @@ fun SignUp(
                 info[4]
             }
             Spacer(modifier = Modifier.height(20.dp))
-            Button(onClick = {
+            GoButton(text = "Lets Go! ",isLoading=isLoading) {
                 if (check(info.toList(), context = context)) {
                     sharedPreferences.edit().putString("name", info[0]).
-                        putString("reg", info[1]).putString("email",info[2]).apply()
-                        firebaseModel.signUp(sharedPreferences = sharedPreferences, context = context, pass = info[3])
+                    putString("reg", info[1]).putString("email",info[2]).apply()
+                    firebaseModel.signUp(sharedPreferences = sharedPreferences, context = context, pass = info[3])
                 }
-            }, colors = ButtonDefaults.buttonColors(containerColor = Colors.Secondary, contentColor = Colors.Primary)) {
-                if (isLoading){
-                    LoadingScreenLL()
-                }
-                else{
-                    Text(text = "Lets Go! ", fontFamily = Fonts.paragraph, fontSize = 18.sp)
-                }
-
             }
         }
     }
 }
-//@Preview(showBackground = true)
-//@Composable
-//fun PreviewSignUp(){
-//    SignUp(navController, firebaseModel, sharedPreferences)
-//}
 
